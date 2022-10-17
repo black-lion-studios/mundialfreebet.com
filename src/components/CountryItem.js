@@ -5,6 +5,7 @@ import Avatar from '@mui/material/Avatar';
 import { CircleFlag } from 'react-circle-flags'
 import BalanceIcon from '@mui/icons-material/Balance';
 import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 import PlaceBetButton from './PlaceBetButton';
 
 const CountryItem = props => {
@@ -18,7 +19,15 @@ const CountryItem = props => {
             { name === "Draw" ? <BalanceIcon /> : <CircleFlag countryCode={country_code} style={{ width: '2em', height: '2em' }} />}
           </Avatar>
         }
-        title={name}
+        sx={{
+          display: "flex",
+          overflow: "hidden",
+          "& .MuiCardHeader-content": {
+            overflow: "hidden",
+            minWidth:120
+          }
+        }}
+        title={<Typography>{name}</Typography>}
         subheader={subheader}
         action={
           <Stack direction="row" spacing={1} sx={{ padding: 1 }}>

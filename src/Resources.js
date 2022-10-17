@@ -19,6 +19,7 @@ import {
 } from 'react-admin';
 import MyDatagrid from "./EventList";
 import CountryItem from "./components/CountryItem";
+import { Grid, Typography } from "@mui/material";
 
 const CountryField = props => {
   const { subheader, parent_id } = props;
@@ -32,10 +33,17 @@ const ReferenceFieldCarry = props => {
   return <ReferenceField {...rest}>{React.cloneElement(children, { parent_id: id })}</ReferenceField>;
 }
 
+const MarginField = record => {
+  const { away_price, home_price, draw_price } = record;
+  const margin = 1/away_price + 1/home_price + 1/draw_price;
+  return <Typography>{margin}</Typography>;
+}
+
 export const AdminEventList = () => (
   <List>
     <Datagrid rowClick="edit">
       <TextField source="id" />
+      <FunctionField render={MarginField} />
       <DateField source="start_date" showTime={true} />
       <TextField source="group" />
       <ReferenceField source="home_id" reference="teams">
@@ -73,16 +81,26 @@ export const AdminEventList = () => (
 
 export const EventList = () => (
   <MyDatagrid>
-    <DateField source="start_date" showTime={true} showDate={false} options={{timeStyle: 'short'}} />
-    <ReferenceFieldCarry source="home_id" reference="teams" link={false}>
-      <CountryField source="country_code" subheader="home" />
-    </ReferenceFieldCarry>
-    <ReferenceFieldCarry source="draw_id" reference="teams" link={false}>
-      <CountryField source="country_code" />
-    </ReferenceFieldCarry>
-    <ReferenceFieldCarry source="away_id" reference="teams" link={false}>
-      <CountryField source="country_code" subheader="away" />
-    </ReferenceFieldCarry>
+    <Grid container spacing={2}>
+      {/* <Grid xs={0}>
+        <DateField source="start_date" showTime={true} showDate={false} options={{timeStyle: 'short'}} />
+      </Grid> */}
+      <Grid item xs={12} md={4}>
+        <ReferenceFieldCarry source="home_id" reference="teams" link={false}>
+          <CountryField source="country_code" subheader="home" />
+        </ReferenceFieldCarry>
+      </Grid>
+      <Grid item xs={12} md={4}>
+        <ReferenceFieldCarry source="draw_id" reference="teams" link={false}>
+          <CountryField source="country_code" />
+        </ReferenceFieldCarry>
+      </Grid>
+      <Grid item xs={12} md={4}>
+        <ReferenceFieldCarry source="away_id" reference="teams" link={false}>
+          <CountryField source="country_code" subheader="away" />
+        </ReferenceFieldCarry>
+      </Grid>
+    </Grid>
   </MyDatagrid>
 );
 

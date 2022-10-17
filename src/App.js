@@ -1,58 +1,89 @@
 import React from 'react';
-import { BrowserRouter, Routes } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import SuperTokens, { SuperTokensWrapper, getSuperTokensRoutesForReactRouterDom } from "supertokens-auth-react";
-import { useSessionContext } from 'supertokens-auth-react/recipe/session';
-import { Route } from "react-router-dom";
 import * as reactRouterDom from "react-router-dom";
 import EmailPassword from "supertokens-auth-react/recipe/emailpassword";
+import ThirdPartyEmailPassword, {Google, Facebook} from "supertokens-auth-react/recipe/thirdpartyemailpassword";
+import { signOut } from "supertokens-auth-react/recipe/emailpassword";
 import Session from "supertokens-auth-react/recipe/session";
+import { Admin, Resource, CustomRoutes, ListGuesser } from 'react-admin';
+import jsonServerProvider from 'ra-data-json-server';
+import Layout from './Bar';
+import {
+  AdminEventList,
+  TeamCreate, TeamEdit, TeamList,
+  EventCreate, EventEdit, EventList,
+} from './Resources';
 
 SuperTokens.init({
   appInfo: {
-    // learn more about this on https://supertokens.com/docs/emailpassword/appinfo
     appName: "mundial",
     apiDomain: "https://5leb08.deta.dev",
-    websiteDomain: "http://localhost:3000",
+    websiteDomain: process.env.REACT_APP_WEBSITE_DOMAIN,
     apiBasePath: "/auth",
     websiteBasePath: "/auth",
   },
   recipeList: [
+    ThirdPartyEmailPassword.init({
+      signInAndUpFeature: {
+        providers: [
+          Google.init(),
+          Facebook.init(),
+        ]
+      }
+    }),
     EmailPassword.init(),
     Session.init()
   ]
 });
 
-const Bla = () => {
-  let session = useSessionContext();
+export const url = 'https://5leb08.deta.dev';
 
-  if (session.loading) {
-      return null;
-  }
+const dataProvider = jsonServerProvider(url);
 
-  let {doesSessionExist, userId, accessTokenPayload} = session;
+const authProvider = {
+  login: params => Promise.resolve(),
+  checkError: params => {
+    const { status } = params;
 
-  // doesSessionExist will always be true if this is wrapped in `<SessionAuth>`
-  if (!doesSessionExist) {
-      // TODO
-  }
+    if (status === 401 || status === 403) {
+        return Promise.reject();
+    }
 
-  // let userId = accessTokenPayload.userName;
+    return Promise.resolve();
+  },
+  checkAuth: async params => {
+    if (await Session.doesSessionExist()) {
+      // let userId = await Session.getUserId();
+      // let accessTokenPayload = await Session.getAccessTokenPayloadSecurely();
+      return Promise.resolve();
+    }
 
-  console.log(session, accessTokenPayload);
-
-  return <h1>{userId}</h1>
-}
+    return Promise.reject();
+  },
+  logout: async params => {
+    const { path } = params;
+    await signOut();
+    window.location.href = path || "/auth";
+    return Promise.reject({ redirectTo: '/auth', message: 'login.required' })
+  },
+  getIdentity: () => Promise.resolve(),
+  getPermissions: () => Promise.resolve(),
+};
 
 const App = () => {
   return (
     <SuperTokensWrapper>
       <BrowserRouter>
-        <Routes>
-          {/*This renders the login UI on the /auth route*/}
-          {getSuperTokensRoutesForReactRouterDom(reactRouterDom)}
-          <Route exact path="/" element={<Bla />} />
-          {/*Your app routes*/}
-        </Routes>
+        <Admin basename="/" dataProvider={dataProvider} authProvider={authProvider} layout={Layout}>
+          <Resource name="events" list={EventList} />
+          <Resource name="adminevents" options={{ label: 'Admin Events' }} list={AdminEventList} create={EventCreate} edit={EventEdit} />
+          <Resource name="bets" list={ListGuesser} />
+          <Resource name="teams" list={TeamList} create={TeamCreate} edit={TeamEdit} />
+          <CustomRoutes>
+            {getSuperTokensRoutesForReactRouterDom(reactRouterDom)}
+          </CustomRoutes>
+        </Admin>
       </BrowserRouter>
     </SuperTokensWrapper>
   );

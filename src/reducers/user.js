@@ -1,95 +1,46 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { base, countries } from "./common";
+import { url } from "../App";
 
-export const createGroup = createAsyncThunk(
-  'groups/create',
-  async (user_key, thunkAPI) => {
-    return fetch(`${base}/group`, {
-      method: 'POST',
+export const subtractRubies = createAsyncThunk(
+  'rubies/update',
+  async (state, thunkAPI) => {
+    const {key, rubies, stake} = state;
+
+    return fetch(`${url}/rubies/${key}`, {
+      method: 'PUT',
       body: JSON.stringify({
-        user_key
+        count: rubies - stake
       })
     }).then(res => res.json())
   }
-)
-
-export const joinGroup = createAsyncThunk(
-  'groups/join',
-  async ({ user_key, group_key }, thunkAPI) => {
-    return fetch(`${base}/group/${group_key}`, {
-      method: 'POST',
-      body: JSON.stringify({
-        user_key
-      })
-    }).then(res => res.json())
-  }
-)
-
-export const savePredictions = createAsyncThunk(
-  'user/savePredictions',
-  async ({ key, items }, thunkAPI) => {
-    return fetch(`${base}/vote/${key}`, {
-      method: 'POST',
-      body: JSON.stringify({ items })
-    }).then(res => res.json())
-  }
-)
+);
 
 const userSlice = createSlice({
   name: 'user',
   initialState: {
-    username: "",
-    isAuthenticated: false,
-    predictions: countries,
-    country_codes: countries.map(d => d.country_code),
-    groups: [],
-    ready: false,
-    results: [],
-    users: [],
+    rubies: 0,
+    userId: "",
   },
   reducers: {
-    setUser: (state, action) => {
-      const { predictions } = action.payload;
-      const { country_codes } = state;
-      const ids = predictions.map(d => d.country_code);
-      const missing = countries.filter(d => !ids.includes(d.country_code))
-
+    setRubies: (state, action) => {
       return {
         ...state,
-        ...action.payload,
-        results: countries,
-        predictions: [...predictions, ...missing].filter(d => country_codes.includes(d.country_code)),
-        ready: true,
+        rubies: action.payload,
       }
     },
-    updatePredictions: (state, action) => ({
-      ...state,
-      predictions: action.payload,
-    }),
-    newGroup: (state, action) => ({
-      ...state,
-      groups: [...state.groups, action.payload],
-    }),
-    setGroups: (state, action) => ({
-      ...state,
-      groups: action.payload,
-    })
+    setSession: (state, action) => {
+      return {
+        ...state,
+        userId: action.payload.userId,
+      }
+    }
   },
   extraReducers: (builder) => {
-    builder.addCase(savePredictions.fulfilled, (state, action) => {
-      return {...state, predictions: action.payload.items }
-    })
-
-    builder.addCase(createGroup.fulfilled, (state, action) => {
-      return {...state, groups: [...state.groups, action.payload]}
-    })
-
-    builder.addCase(joinGroup.fulfilled, (state, action) => {
-      const { key } = action.payload;
-      return {...state, groups: [...state.groups.filter(d => d.key !== key), action.payload]}
-    })
+    builder.addCase(subtractRubies.fulfilled, (state, action) => {
+      return {...state, rubies: action.payload.count}
+    });
   }
 });
 
-export const { setUser, updatePredictions, newGroup, setGroups } = userSlice.actions;
+export const { setRubies, setSession } = userSlice.actions;
 export default userSlice.reducer;

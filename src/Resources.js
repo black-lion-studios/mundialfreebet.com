@@ -11,7 +11,9 @@ import {
   SelectInput,
   Create,
   FunctionField,
-  useRecordContext
+  useRecordContext,
+  NumberField,
+  NumberInput
 } from 'react-admin';
 import MyDatagrid from "./EventList";
 import CountryItem from "./components/CountryItem";
@@ -35,12 +37,15 @@ export const AdminEventList = () => (
       <ReferenceField source="home_id" reference="teams">
         <TextField source="name" />
       </ReferenceField>
+      <NumberField source="home_price" />
       <ReferenceField source="draw_id" reference="teams">
         <TextField source="name" />
       </ReferenceField>
+      <NumberField source="draw_price" />
       <ReferenceField source="away_id" reference="teams">
         <TextField source="name" />
       </ReferenceField>
+      <NumberField source="away_price" />
     </Datagrid>
   </List>
 );
@@ -67,12 +72,15 @@ export const EventEdit = () => (
       <ReferenceInput source="home_id" reference="teams">
         <SelectInput optionText="name" />
       </ReferenceInput>
+      <NumberInput source="home_price" defaultValue={3.00} />
       <ReferenceInput source="draw_id" reference="teams">
         <SelectInput optionText="name" />
       </ReferenceInput>
+      <NumberInput source="draw_price" defaultValue={3.00} />
       <ReferenceInput source="away_id" reference="teams">
         <SelectInput optionText="name" />
       </ReferenceInput>
+      <NumberInput source="away_price" defaultValue={3.00} />
     </SimpleForm>
   </Edit>
 );
@@ -83,12 +91,15 @@ export const EventCreate = () => (
       <ReferenceInput source="home_id" reference="teams">
         <SelectInput optionText="name" />
       </ReferenceInput>
+      <NumberInput source="home_price" defaultValue={3.00} />
       <ReferenceInput source="draw_id" reference="teams">
         <SelectInput optionText="name" defaultValue="sxus1qjs3f8t" />
       </ReferenceInput>
+      <NumberInput source="draw_price" defaultValue={3.00} />
       <ReferenceInput source="away_id" reference="teams">
         <SelectInput optionText="name" />
       </ReferenceInput>
+      <NumberInput source="away_price" defaultValue="3.04" />
     </SimpleForm>
   </Create>
 );

@@ -13,7 +13,9 @@ import {
   FunctionField,
   useRecordContext,
   NumberField,
-  NumberInput
+  NumberInput,
+  DateField,
+  DateTimeInput,
 } from 'react-admin';
 import MyDatagrid from "./EventList";
 import CountryItem from "./components/CountryItem";
@@ -34,6 +36,8 @@ export const AdminEventList = () => (
   <List>
     <Datagrid rowClick="edit">
       <TextField source="id" />
+      <DateField source="start_date" showTime={true} />
+      <TextField source="group" />
       <ReferenceField source="home_id" reference="teams">
         <TextField source="name" />
       </ReferenceField>
@@ -50,25 +54,43 @@ export const AdminEventList = () => (
   </List>
 );
 
+// export const EventList = () => (
+//   <List exporter={false}>
+//     <MyDatagrid rowClick="edit" header={() => {}}>
+//       {/* <DateField source="start_date" showTime={true} options={{ weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }} /> */}
+//       <ReferenceFieldCarry source="home_id" reference="teams" link={false}>
+//         <CountryField source="country_code" subheader="home" />
+//       </ReferenceFieldCarry>
+//       <ReferenceFieldCarry source="draw_id" reference="teams" link={false}>
+//         <CountryField source="country_code" />
+//       </ReferenceFieldCarry>
+//       <ReferenceFieldCarry source="away_id" reference="teams" link={false}>
+//         <CountryField source="country_code" subheader="away" />
+//       </ReferenceFieldCarry>
+//     </MyDatagrid>
+//   </List>
+// );
+
 export const EventList = () => (
-  <List exporter={false}>
-    <MyDatagrid rowClick="edit" header={() => {}}>
-      <ReferenceFieldCarry source="home_id" reference="teams" link={false}>
-        <CountryField source="country_code" subheader="home" />
-      </ReferenceFieldCarry>
-      <ReferenceFieldCarry source="draw_id" reference="teams" link={false}>
-        <CountryField source="country_code" />
-      </ReferenceFieldCarry>
-      <ReferenceFieldCarry source="away_id" reference="teams" link={false}>
-        <CountryField source="country_code" subheader="away" />
-      </ReferenceFieldCarry>
-    </MyDatagrid>
-  </List>
+  <MyDatagrid>
+    <DateField source="start_date" showTime={true} showDate={false} options={{timeStyle: 'short'}} />
+    <ReferenceFieldCarry source="home_id" reference="teams" link={false}>
+      <CountryField source="country_code" subheader="home" />
+    </ReferenceFieldCarry>
+    <ReferenceFieldCarry source="draw_id" reference="teams" link={false}>
+      <CountryField source="country_code" />
+    </ReferenceFieldCarry>
+    <ReferenceFieldCarry source="away_id" reference="teams" link={false}>
+      <CountryField source="country_code" subheader="away" />
+    </ReferenceFieldCarry>
+  </MyDatagrid>
 );
 
 export const EventEdit = () => (
   <Edit>
     <SimpleForm>
+      <DateTimeInput source="start_date" />
+      <TextInput source="group" />
       <ReferenceInput source="home_id" reference="teams">
         <SelectInput optionText="name" />
       </ReferenceInput>
@@ -88,6 +110,8 @@ export const EventEdit = () => (
 export const EventCreate = () => (
   <Create redirect="list">
     <SimpleForm>
+      <DateTimeInput source="start_date" />
+      <TextInput source="group" />
       <ReferenceInput source="home_id" reference="teams">
         <SelectInput optionText="name" />
       </ReferenceInput>

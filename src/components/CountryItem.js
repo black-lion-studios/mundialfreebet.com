@@ -1,53 +1,35 @@
-import React, { useState } from 'react';
-import { Draggable } from 'react-beautiful-dnd';
-import { List, ListItem, ListItemAvatar, ListItemText, ListItemButton, ListItemIcon } from '@mui/material';
-import ReactCountryFlag from "react-country-flag"
-import ReactPlayer from 'react-player'
-import ReorderIcon from '@mui/icons-material/Reorder';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-import Collapse from '@mui/material/Collapse';
+import React from 'react';
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import Avatar from '@mui/material/Avatar';
+import { CircleFlag } from 'react-circle-flags'
+import BalanceIcon from '@mui/icons-material/Balance';
+import Stack from '@mui/material/Stack';
+import PlaceBetButton from './PlaceBetButton';
 
-const Item = props => {
-  const { provided, item, index } = props;
-  const [open, setOpen] = useState(false);
-
-  const handleClick = () => {
-    setOpen(!open);
-  };
+const CountryItem = props => {
+  const { id, country_code, name, subheader, parent_id } = props;
 
   return (
-    <List ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-      <ListItem sx={{ paddingLeft: 0, paddingRight: 0 }}>
-        <ListItemIcon>
-          <ReorderIcon />
-        </ListItemIcon>
-        <ListItemAvatar sx={{ minWidth: 35 }}>
-          {index + 1}
-        </ListItemAvatar>
-        <ListItemAvatar>
-          <ReactCountryFlag countryCode={item.country_code} svg style={{ width: '2em', height: '2em' }} />
-        </ListItemAvatar>
-        <ListItemButton onClick={handleClick} sx={{ paddingLeft: 0, paddingRight: 0 }}>
-          <ListItemText primary={item.primary}/>
-          {open ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
-      </ListItem>
-      <Collapse in={open} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-          <ReactPlayer url={item.secondary} width='100%' controls={true} />
-        </List>
-      </Collapse>
-    </List>
-  )
+    <Card>
+      <CardHeader
+        avatar={
+          <Avatar>
+            { name === "Draw" ? <BalanceIcon /> : <CircleFlag countryCode={country_code} style={{ width: '2em', height: '2em' }} />}
+          </Avatar>
+        }
+        title={name}
+        subheader={subheader}
+        action={
+          <Stack direction="row" spacing={1} sx={{ padding: 1 }}>
+            <PlaceBetButton stake={1} id={id} event_id={parent_id} />
+            <PlaceBetButton stake={2} id={id} event_id={parent_id} />
+            <PlaceBetButton stake={5} id={id} event_id={parent_id} />
+          </Stack>
+        }
+      />
+    </Card>
+  );
 }
 
-const DraggableListItem = ({ item, index }) => {
-  return (
-    <Draggable draggableId={item.id} index={index}>
-      {(provided, snapshot) => <Item provided={provided} snapshot={snapshot} item={item} index={index} />}
-    </Draggable>
-  );
-};
-
-export default DraggableListItem;
+export default CountryItem;

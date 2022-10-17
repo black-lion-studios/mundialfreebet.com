@@ -1,9 +1,9 @@
 import React from 'react';
-import { BrowserRouter } from "react-router-dom";
+import { HashRouter as Router } from "react-router-dom";
 import SuperTokens, { SuperTokensWrapper, getSuperTokensRoutesForReactRouterDom } from "supertokens-auth-react";
 import * as reactRouterDom from "react-router-dom";
 import EmailPassword from "supertokens-auth-react/recipe/emailpassword";
-import ThirdPartyEmailPassword, {Google, Facebook} from "supertokens-auth-react/recipe/thirdpartyemailpassword";
+import ThirdPartyEmailPassword from "supertokens-auth-react/recipe/thirdpartyemailpassword";
 import { signOut } from "supertokens-auth-react/recipe/emailpassword";
 import Session from "supertokens-auth-react/recipe/session";
 import { Admin, Resource, CustomRoutes, ListGuesser } from 'react-admin';
@@ -21,14 +21,23 @@ SuperTokens.init({
     apiDomain: "https://5leb08.deta.dev",
     websiteDomain: process.env.REACT_APP_WEBSITE_DOMAIN,
     apiBasePath: "/auth",
-    websiteBasePath: "/auth",
+    websiteBasePath: "/#/",
   },
   recipeList: [
     ThirdPartyEmailPassword.init({
+      getRedirectionURL: async (context) => {
+        if (context.action === "SUCCESS") {
+          if (context.redirectToPath !== undefined) {
+            return context.redirectToPath;
+          }
+          return "/events";
+        }
+        return undefined;
+      },
       signInAndUpFeature: {
         providers: [
-          Google.init(),
-          Facebook.init(),
+          // Google.init(),
+          // Facebook.init(),
         ]
       }
     }),
@@ -42,7 +51,9 @@ export const url = 'https://5leb08.deta.dev';
 const dataProvider = jsonServerProvider(url);
 
 const authProvider = {
-  login: params => Promise.resolve(),
+  login: params => {
+    return Promise.resolve();
+  },
   checkError: params => {
     const { status } = params;
 
@@ -64,8 +75,8 @@ const authProvider = {
   logout: async params => {
     const { path } = params;
     await signOut();
-    window.location.href = path || "/auth";
-    return Promise.reject({ redirectTo: '/auth', message: 'login.required' })
+    window.location.href = path || "/#/";
+    return Promise.reject({ redirectTo: '/#/', message: 'login.required' })
   },
   getIdentity: () => Promise.resolve(),
   getPermissions: () => Promise.resolve(),
@@ -74,8 +85,8 @@ const authProvider = {
 const App = () => {
   return (
     <SuperTokensWrapper>
-      <BrowserRouter>
-        <Admin basename="/" dataProvider={dataProvider} authProvider={authProvider} layout={Layout}>
+      <Router>
+        <Admin dataProvider={dataProvider} authProvider={authProvider} layout={Layout}>
           <Resource name="events" list={EventList} />
           <Resource name="adminevents" options={{ label: 'Admin Events' }} list={AdminEventList} create={EventCreate} edit={EventEdit} />
           <Resource name="bets" list={ListGuesser} />
@@ -84,7 +95,7 @@ const App = () => {
             {getSuperTokensRoutesForReactRouterDom(reactRouterDom)}
           </CustomRoutes>
         </Admin>
-      </BrowserRouter>
+      </Router>
     </SuperTokensWrapper>
   );
 }

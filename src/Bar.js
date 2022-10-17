@@ -64,7 +64,7 @@ const useRubies = session => {
 const MyLogoutButton = forwardRef((props, ref) => {
   async function onLogout() {
     await signOut();
-    window.location.href = "/auth";
+    window.location.href = "/#/";
   }
 
   return (

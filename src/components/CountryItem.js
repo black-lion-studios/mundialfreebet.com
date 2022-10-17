@@ -24,7 +24,6 @@ const CountryItem = props => {
           overflow: "hidden",
           "& .MuiCardHeader-content": {
             overflow: "hidden",
-            minWidth:120
           }
         }}
         title={<Typography>{name}</Typography>}

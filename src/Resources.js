@@ -21,6 +21,12 @@ import MyDatagrid from "./EventList";
 import CountryItem from "./components/CountryItem";
 import { Grid, Typography } from "@mui/material";
 
+const SubtitleField = props => {
+  return (
+    <Typography component="h3" variant="subtitle2" style={{ fontSize: "1.1rem" }} {...props} />
+  )
+}
+
 const CountryField = props => {
   const { subheader, parent_record } = props;
   return <FunctionField render={record => <CountryItem {...record} parent_record={parent_record} subheader={subheader} />} />
@@ -41,17 +47,20 @@ const MarginField = record => {
 export const EventList = () => (
   <MyDatagrid>
     <Grid container spacing={2}>
-      <Grid item xs={12} md={4}>
+      <Grid item xs={12}>
+        <DateField source="start_date" showTime={true} options={{ dateStyle: 'long',  timeStyle: 'short' }} component={SubtitleField} />
+      </Grid>
+      <Grid item xs={12} md={4} style={{ paddingTop: 0 }}>
         <ReferenceFieldCarry source="home_id" reference="teams" link={false}>
           <CountryField source="country_code" subheader="home" />
         </ReferenceFieldCarry>
       </Grid>
-      <Grid item xs={12} md={4}>
+      <Grid item xs={12} md={4} style={{ paddingTop: 0 }}>
         <ReferenceFieldCarry source="draw_id" reference="teams" link={false}>
           <CountryField source="country_code" />
         </ReferenceFieldCarry>
       </Grid>
-      <Grid item xs={12} md={4}>
+      <Grid item xs={12} md={4} style={{ paddingTop: 0 }}>
         <ReferenceFieldCarry source="away_id" reference="teams" link={false}>
           <CountryField source="country_code" subheader="away" />
         </ReferenceFieldCarry>

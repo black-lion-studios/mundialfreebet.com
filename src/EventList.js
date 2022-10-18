@@ -33,8 +33,8 @@ const MyContext = props => {
   return (
     <ListContextProvider value={contextProvider}>
       <Card style={{ marginTop: 20 }}>
-        <CardHeader title={`Group ${String.fromCharCode(group+65)}`} />
-        <MyDatagrid rowClick="edit" header={() => {}}>
+        <CardHeader title={`Group ${String.fromCharCode(group + 65)}`} />
+        <MyDatagrid rowClick="edit" header={() => { }}>
           {children}
         </MyDatagrid>
       </Card>
@@ -44,14 +44,15 @@ const MyContext = props => {
 
 const MyCustomList = props => {
   const { children } = props;
-  // pagination: { page: 1, perPage: 20 },
+
   const { data, isLoading } = useGetList('events', {
-    sort: { field: 'group', order: 'DESC' },
+    pagination: { page: 1, perPage: 100 },
+    sort: { field: 'start_date', order: 'ASC' },
   });
   const tofilter = data || [];
 
   const fromfilter = tofilter.reduce((acc, cur) => {
-    const i = cur.group.charCodeAt(0)-65;
+    const i = cur.group.charCodeAt(0) - 65;
     if (acc[i] === undefined) {
       acc[i] = [];
     }

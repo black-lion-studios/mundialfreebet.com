@@ -83,7 +83,7 @@ const MyAppBar = () => {
   return (
     <AppBar color="primary" userMenu={<MyUserMenu />}>
       <div style={{ marginLeft: 'auto', padding: 12 }}>
-        <Badge badgeContent={rubies}>
+        <Badge badgeContent={rubies} max={9999}>
           <DiamondIcon />
         </Badge>
       </div>

@@ -40,10 +40,10 @@ const MarginField = record => {
 }
 
 export const AdminEventList = () => (
-  <List>
+  <List perPage={50}>
     <Datagrid rowClick="edit">
       <TextField source="id" />
-      <FunctionField render={MarginField} />
+      <FunctionField label="Margin" render={MarginField} />
       <DateField source="start_date" showTime={true} />
       <TextField source="group" />
       <ReferenceField source="home_id" reference="teams">
@@ -109,15 +109,15 @@ export const EventEdit = () => (
     <SimpleForm>
       <DateTimeInput source="start_date" />
       <TextInput source="group" />
-      <ReferenceInput source="home_id" reference="teams">
+      <ReferenceInput perPage={50} sort={{ field: "name", order: "ASC" }} source="home_id" reference="teams">
         <SelectInput optionText="name" />
       </ReferenceInput>
       <NumberInput source="home_price" defaultValue={3.00} />
-      <ReferenceInput source="draw_id" reference="teams">
+      <ReferenceInput perPage={50} sort={{ field: "name", order: "ASC" }} source="draw_id" reference="teams">
         <SelectInput optionText="name" />
       </ReferenceInput>
       <NumberInput source="draw_price" defaultValue={3.00} />
-      <ReferenceInput source="away_id" reference="teams">
+      <ReferenceInput perPage={50} sort={{ field: "name", order: "ASC" }} source="away_id" reference="teams">
         <SelectInput optionText="name" />
       </ReferenceInput>
       <NumberInput source="away_price" defaultValue={3.00} />
@@ -130,24 +130,24 @@ export const EventCreate = () => (
     <SimpleForm>
       <DateTimeInput source="start_date" />
       <TextInput source="group" />
-      <ReferenceInput source="home_id" reference="teams">
+      <ReferenceInput perPage={50} sort={{ field: "name", order: "ASC" }} source="home_id" reference="teams">
         <SelectInput optionText="name" />
       </ReferenceInput>
       <NumberInput source="home_price" defaultValue={3.00} />
-      <ReferenceInput source="draw_id" reference="teams">
+      <ReferenceInput perPage={50} sort={{ field: "name", order: "ASC" }} source="draw_id" reference="teams">
         <SelectInput optionText="name" defaultValue="sxus1qjs3f8t" />
       </ReferenceInput>
       <NumberInput source="draw_price" defaultValue={3.00} />
-      <ReferenceInput source="away_id" reference="teams">
+      <ReferenceInput perPage={50} sort={{ field: "name", order: "ASC" }} source="away_id" reference="teams">
         <SelectInput optionText="name" />
       </ReferenceInput>
-      <NumberInput source="away_price" defaultValue="3.04" />
+      <NumberInput source="away_price" defaultValue={3.00} />
     </SimpleForm>
   </Create>
 );
 
 export const TeamList = () => (
-  <List>
+  <List perPage={50}>
     <Datagrid rowClick="edit">
       <TextField source="name" />
       <TextField source="country_code" />

@@ -32,7 +32,7 @@ const MyContext = props => {
 
   return (
     <ListContextProvider value={contextProvider}>
-      <Card style={{ marginBottom: 10 }}>
+      <Card style={{ marginTop: 20 }}>
         <CardHeader title={`Group ${String.fromCharCode(group+65)}`} />
         <MyDatagrid rowClick="edit" header={() => {}}>
           {children}

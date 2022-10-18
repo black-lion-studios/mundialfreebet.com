@@ -2,6 +2,8 @@ import React, { useState, useCallback } from 'react';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useDispatch, useSelector } from 'react-redux';
 import { subtractRubies } from '../reducers/user';
+import MuiAlert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 import { url } from '../App';
 
 const placeBet = (id, event_id, stake) => fetch(`${url}/bets`, {
@@ -13,6 +15,10 @@ const placeBet = (id, event_id, stake) => fetch(`${url}/bets`, {
   })
 }).then(res => res.json())
 
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 const Component = props => {
   const { id, event_id, price, comment } = props;
   const dispatch = useDispatch();
@@ -20,6 +26,15 @@ const Component = props => {
   const rubies = useSelector(state => state.user.rubies);
   const stake = useSelector(state => state.user.stake);
   const [isSending, setIsSending] = useState(false);
+  const [open, setOpen] = React.useState(false);
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
 
   const sendRequest = useCallback(async() => {
     setIsSending(true)
@@ -28,12 +43,20 @@ const Component = props => {
       dispatch(subtractRubies({key: userId, rubies, stake}));
       setTimeout(() => {
         setIsSending(false);
+        setOpen(true);
       }, 1000);
     });
   }, [id, event_id, stake, userId, rubies, dispatch])
 
   return (
-    <LoadingButton loading={isSending} onClick={sendRequest} {...props}>{comment} {price}</LoadingButton>
+    <React.Fragment>
+      <LoadingButton loading={isSending} onClick={sendRequest} {...props}>{comment} {price}</LoadingButton>
+      <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+          Success!
+        </Alert>
+      </Snackbar>
+    </React.Fragment>
   )
 }
 

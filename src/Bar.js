@@ -11,6 +11,7 @@ import { url } from './App';
 import { setSession, setRubies, setStake } from './reducers/user';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
+import Stack from '@mui/material/Stack';
 
 const useSession = () => {
   const session = useSessionContext();
@@ -86,7 +87,7 @@ const MyAppBar = () => {
 
   return (
     <AppBar color="primary" userMenu={<MyUserMenu />}>
-      <div style={{ marginLeft: 'auto', padding: 12 }}>
+      <Stack direction="row" alignItems="center" style={{ marginLeft: 'auto', padding: 12 }}>
         <ButtonGroup variant="contained" color="secondary" style={{ marginRight: 12 }}>
           <Button color={ stake === 1 ? "error" : "secondary"} startIcon={stake === 1 ? <DiamondIcon /> : null} onClick={() => dispatch(setStake(1))}>1</Button>
           <Button color={ stake === 2 ? "error" : "secondary"} startIcon={stake === 2 ? <DiamondIcon /> : null} onClick={() => dispatch(setStake(2))}>2</Button>
@@ -95,7 +96,7 @@ const MyAppBar = () => {
         <Badge badgeContent={rubies} max={9999} >
           <DiamondIcon />
         </Badge>
-      </div>
+      </Stack>
     </AppBar>
   );
 }

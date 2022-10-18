@@ -81,8 +81,8 @@ const MyAppBar = () => {
   const rubies = useRubies(session);
 
   return (
-    <AppBar userMenu={<MyUserMenu />}>
-      <div style={{ color: "white", marginLeft: 'auto', padding: 12 }}>
+    <AppBar color="primary" userMenu={<MyUserMenu />}>
+      <div style={{ marginLeft: 'auto', padding: 12 }}>
         <Badge badgeContent={rubies}>
           <DiamondIcon />
         </Badge>

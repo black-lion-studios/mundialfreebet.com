@@ -33,7 +33,7 @@ const Component = props => {
   }, [id, event_id, stake, userId, rubies, dispatch])
 
   return (
-    <LoadingButton startIcon={<DiamondIcon />} loading={isSending} variant="outlined" onClick={sendRequest}>{stake}</LoadingButton>
+    <LoadingButton startIcon={<DiamondIcon />} loading={isSending} color="secondary" variant="contained" onClick={sendRequest}>{stake}</LoadingButton>
   )
 }
 

@@ -19,17 +19,74 @@ import {
 } from 'react-admin';
 import MyDatagrid from "./EventList";
 import CountryItem from "./components/CountryItem";
-import { Grid, Typography } from "@mui/material";
-
-const SubtitleField = props => {
-  return (
-    <Typography component="h3" variant="subtitle2" style={{ fontSize: "1.1rem" }} {...props} />
-  )
-}
+import { ButtonGroup, Grid, Typography } from "@mui/material";
+import Stack from '@mui/material/Stack';
+import PlaceBetButton from './components/PlaceBetButton';
+import { useMediaQuery } from '@mui/material';
 
 const CountryField = props => {
-  const { subheader, parent_record } = props;
-  return <FunctionField render={record => <CountryItem {...record} parent_record={parent_record} subheader={subheader} />} />
+  const { subheader, parent_record, reversed } = props;
+  return <FunctionField render={record => <CountryItem {...record} parent_record={parent_record} subheader={subheader} reversed={reversed} />} />
+}
+
+const LargeScreen = props => {
+  const { id, home_price, home_id, draw_price, draw_id, away_price, away_id } = props;
+
+  return (
+    <Grid container alignItems="center">
+      <Grid item xs={4}>
+        <ReferenceFieldCarry source="home_id" reference="teams" link={false}>
+          <CountryField source="country_code" subheader="home" reversed={true} />
+        </ReferenceFieldCarry>
+      </Grid>
+      <Grid item xs={4}>
+        <Stack spacing={1} direction="column" justifyContent="center" alignItems="center" style={{ height: "100%" }}>
+          <DateField source="start_date" showTime={true} options={{ dateStyle: 'long', timeStyle: 'short' }} />
+          <ButtonGroup variant="outlined" color="primary" fullWidth>
+            <PlaceBetButton variant="outlined" color="primary" id={home_id} event_id={id} price={home_price} comment="home" />
+            <PlaceBetButton variant="outlined" color="primary" id={draw_id} event_id={id} price={draw_price} comment="draw" />
+            <PlaceBetButton variant="outlined" color="primary" id={away_id} event_id={id} price={away_price} comment="away" />
+          </ButtonGroup>
+        </Stack>
+      </Grid>
+      <Grid item xs={4}>
+        <ReferenceFieldCarry source="away_id" reference="teams" link={false}>
+          <CountryField source="country_code" subheader="away" />
+        </ReferenceFieldCarry>
+      </Grid>
+    </Grid>
+  );
+}
+
+const SmallScreen = props => {
+  const { id, home_price, home_id, draw_price, draw_id, away_price, away_id } = props;
+
+  return (
+    <Grid container alignItems="center">
+      <Grid item xs={12}>
+        <Stack spacing={1} direction="column" justifyContent="center" alignItems="center" style={{ height: "100%" }}>
+          <DateField source="start_date" showTime={true} options={{ dateStyle: 'long', timeStyle: 'short' }} />
+          <Grid container alignItems="center">
+            <Grid item xs={6}>
+              <ReferenceFieldCarry source="home_id" reference="teams" link={false}>
+                <CountryField source="country_code" subheader="home" reversed={true} />
+              </ReferenceFieldCarry>
+            </Grid>
+            <Grid item xs={6}>
+              <ReferenceFieldCarry source="away_id" reference="teams" link={false}>
+                <CountryField source="country_code" subheader="away" />
+              </ReferenceFieldCarry>
+            </Grid>
+          </Grid>
+          <ButtonGroup variant="outlined" color="primary" fullWidth>
+            <PlaceBetButton variant="outlined" color="primary" id={home_id} event_id={id} price={home_price} comment="home" />
+            <PlaceBetButton variant="outlined" color="primary" id={draw_id} event_id={id} price={draw_price} comment="draw" />
+            <PlaceBetButton variant="outlined" color="primary" id={away_id} event_id={id} price={away_price} comment="away" />
+          </ButtonGroup>
+        </Stack>
+      </Grid>
+    </Grid>
+  );
 }
 
 const ReferenceFieldCarry = props => {
@@ -44,30 +101,15 @@ const MarginField = record => {
   return <Typography>{margin}</Typography>;
 }
 
-export const EventList = () => (
-  <MyDatagrid>
-    <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <DateField source="start_date" showTime={true} options={{ dateStyle: 'long',  timeStyle: 'short' }} component={SubtitleField} />
-      </Grid>
-      <Grid item xs={12} md={4} style={{ paddingTop: 0 }}>
-        <ReferenceFieldCarry source="home_id" reference="teams" link={false}>
-          <CountryField source="country_code" subheader="home" />
-        </ReferenceFieldCarry>
-      </Grid>
-      <Grid item xs={12} md={4} style={{ paddingTop: 0 }}>
-        <ReferenceFieldCarry source="draw_id" reference="teams" link={false}>
-          <CountryField source="country_code" />
-        </ReferenceFieldCarry>
-      </Grid>
-      <Grid item xs={12} md={4} style={{ paddingTop: 0 }}>
-        <ReferenceFieldCarry source="away_id" reference="teams" link={false}>
-          <CountryField source="country_code" subheader="away" />
-        </ReferenceFieldCarry>
-      </Grid>
-    </Grid>
-  </MyDatagrid>
-);
+export const EventList = () => {
+  const isSmall = useMediaQuery(theme => theme.breakpoints.down('md'));
+
+  return (
+    <MyDatagrid>
+      <FunctionField render={record => isSmall ? <SmallScreen {...record} /> : <LargeScreen {...record} />} />
+    </MyDatagrid>
+  );
+}
 
 export const AdminEventList = () => (
   <List perPage={50}>

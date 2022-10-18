@@ -8,7 +8,9 @@ import DiamondIcon from '@mui/icons-material/Diamond';
 import { useSessionContext } from 'supertokens-auth-react/recipe/session';
 import { useDispatch, useSelector } from 'react-redux';
 import { url } from './App';
-import { setSession, setRubies } from './reducers/user';
+import { setSession, setRubies, setStake } from './reducers/user';
+import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
 
 const useSession = () => {
   const session = useSessionContext();
@@ -79,11 +81,18 @@ const MyUserMenu = () => <UserMenu><MyLogoutButton /></UserMenu>;
 const MyAppBar = () => {
   const session = useSession();
   const rubies = useRubies(session);
+  const dispatch = useDispatch();
+  const stake = useSelector(state => state.user.stake);
 
   return (
     <AppBar color="primary" userMenu={<MyUserMenu />}>
       <div style={{ marginLeft: 'auto', padding: 12 }}>
-        <Badge badgeContent={rubies} max={9999}>
+        <ButtonGroup variant="contained" color="secondary" style={{ marginRight: 12 }}>
+          <Button color={ stake === 1 ? "error" : "secondary"} startIcon={stake === 1 ? <DiamondIcon /> : null} onClick={() => dispatch(setStake(1))}>1</Button>
+          <Button color={ stake === 2 ? "error" : "secondary"} startIcon={stake === 2 ? <DiamondIcon /> : null} onClick={() => dispatch(setStake(2))}>2</Button>
+          <Button color={ stake === 5 ? "error" : "secondary"} startIcon={stake === 5 ? <DiamondIcon /> : null} onClick={() => dispatch(setStake(5))}>5</Button>
+        </ButtonGroup>
+        <Badge badgeContent={rubies} max={9999} >
           <DiamondIcon />
         </Badge>
       </div>

@@ -22,15 +22,14 @@ import CountryItem from "./components/CountryItem";
 import { Grid, Typography } from "@mui/material";
 
 const CountryField = props => {
-  const { subheader, parent_id } = props;
-  return <FunctionField render={record => <CountryItem {...record} parent_id={parent_id} subheader={subheader} />} />
+  const { subheader, parent_record } = props;
+  return <FunctionField render={record => <CountryItem {...record} parent_record={parent_record} subheader={subheader} />} />
 }
 
 const ReferenceFieldCarry = props => {
   const { children, ...rest } = props;
   const record = useRecordContext();
-  const { id } = record;
-  return <ReferenceField {...rest}>{React.cloneElement(children, { parent_id: id })}</ReferenceField>;
+  return <ReferenceField {...rest}>{React.cloneElement(children, { parent_record: record })}</ReferenceField>;
 }
 
 const MarginField = record => {
@@ -38,6 +37,28 @@ const MarginField = record => {
   const margin = 1/away_price + 1/home_price + 1/draw_price;
   return <Typography>{margin}</Typography>;
 }
+
+export const EventList = () => (
+  <MyDatagrid>
+    <Grid container spacing={2}>
+      <Grid item xs={12} md={4}>
+        <ReferenceFieldCarry source="home_id" reference="teams" link={false}>
+          <CountryField source="country_code" subheader="home" />
+        </ReferenceFieldCarry>
+      </Grid>
+      <Grid item xs={12} md={4}>
+        <ReferenceFieldCarry source="draw_id" reference="teams" link={false}>
+          <CountryField source="country_code" />
+        </ReferenceFieldCarry>
+      </Grid>
+      <Grid item xs={12} md={4}>
+        <ReferenceFieldCarry source="away_id" reference="teams" link={false}>
+          <CountryField source="country_code" subheader="away" />
+        </ReferenceFieldCarry>
+      </Grid>
+    </Grid>
+  </MyDatagrid>
+);
 
 export const AdminEventList = () => (
   <List perPage={50}>
@@ -60,48 +81,6 @@ export const AdminEventList = () => (
       <NumberField source="away_price" />
     </Datagrid>
   </List>
-);
-
-// export const EventList = () => (
-//   <List exporter={false}>
-//     <MyDatagrid rowClick="edit" header={() => {}}>
-//       {/* <DateField source="start_date" showTime={true} options={{ weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }} /> */}
-//       <ReferenceFieldCarry source="home_id" reference="teams" link={false}>
-//         <CountryField source="country_code" subheader="home" />
-//       </ReferenceFieldCarry>
-//       <ReferenceFieldCarry source="draw_id" reference="teams" link={false}>
-//         <CountryField source="country_code" />
-//       </ReferenceFieldCarry>
-//       <ReferenceFieldCarry source="away_id" reference="teams" link={false}>
-//         <CountryField source="country_code" subheader="away" />
-//       </ReferenceFieldCarry>
-//     </MyDatagrid>
-//   </List>
-// );
-
-export const EventList = () => (
-  <MyDatagrid>
-    <Grid container spacing={2}>
-      {/* <Grid xs={0}>
-        <DateField source="start_date" showTime={true} showDate={false} options={{timeStyle: 'short'}} />
-      </Grid> */}
-      <Grid item xs={12} md={4}>
-        <ReferenceFieldCarry source="home_id" reference="teams" link={false}>
-          <CountryField source="country_code" subheader="home" />
-        </ReferenceFieldCarry>
-      </Grid>
-      <Grid item xs={12} md={4}>
-        <ReferenceFieldCarry source="draw_id" reference="teams" link={false}>
-          <CountryField source="country_code" />
-        </ReferenceFieldCarry>
-      </Grid>
-      <Grid item xs={12} md={4}>
-        <ReferenceFieldCarry source="away_id" reference="teams" link={false}>
-          <CountryField source="country_code" subheader="away" />
-        </ReferenceFieldCarry>
-      </Grid>
-    </Grid>
-  </MyDatagrid>
 );
 
 export const EventEdit = () => (

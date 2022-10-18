@@ -44,9 +44,9 @@ const MyContext = props => {
 
 const MyCustomList = props => {
   const { children } = props;
+  // pagination: { page: 1, perPage: 20 },
   const { data, isLoading } = useGetList('events', {
-    pagination: { page: 1, perPage: 10 },
-    sort: { field: 'id', order: 'DESC' },
+    sort: { field: 'group', order: 'DESC' },
   });
   const tofilter = data || [];
 

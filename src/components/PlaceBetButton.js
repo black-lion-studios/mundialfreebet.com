@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react';
 import LoadingButton from '@mui/lab/LoadingButton';
-import DiamondIcon from '@mui/icons-material/Diamond';
 import { useDispatch, useSelector } from 'react-redux';
 import { subtractRubies } from '../reducers/user';
 import { url } from '../App';
@@ -15,10 +14,11 @@ const placeBet = (id, event_id, stake) => fetch(`${url}/bets`, {
 }).then(res => res.json())
 
 const Component = props => {
-  const { id, event_id, stake } = props;
+  const { id, event_id, price, comment } = props;
   const dispatch = useDispatch();
   const userId = useSelector(state => state.user.userId);
   const rubies = useSelector(state => state.user.rubies);
+  const stake = useSelector(state => state.user.stake);
   const [isSending, setIsSending] = useState(false);
 
   const sendRequest = useCallback(async() => {
@@ -33,7 +33,7 @@ const Component = props => {
   }, [id, event_id, stake, userId, rubies, dispatch])
 
   return (
-    <LoadingButton startIcon={<DiamondIcon />} loading={isSending} color="secondary" variant="contained" onClick={sendRequest}>{stake}</LoadingButton>
+    <LoadingButton loading={isSending} onClick={sendRequest} {...props}>{comment} {price}</LoadingButton>
   )
 }
 

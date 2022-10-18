@@ -20,6 +20,7 @@ const userSlice = createSlice({
   initialState: {
     rubies: 0,
     userId: "",
+    stake: 1,
   },
   reducers: {
     setRubies: (state, action) => {
@@ -33,6 +34,12 @@ const userSlice = createSlice({
         ...state,
         userId: action.payload.userId,
       }
+    },
+    setStake: (state, action) => {
+      return {
+        ...state,
+        stake: action.payload,
+      }
     }
   },
   extraReducers: (builder) => {
@@ -42,5 +49,5 @@ const userSlice = createSlice({
   }
 });
 
-export const { setRubies, setSession } = userSlice.actions;
+export const { setRubies, setSession, setStake } = userSlice.actions;
 export default userSlice.reducer;

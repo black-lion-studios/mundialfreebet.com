@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { subtractRubies } from '../reducers/user';
 import MuiAlert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
+import DiamondIcon from '@mui/icons-material/Diamond';
 import { url } from '../App';
 
 const placeBet = (id, event_id, stake) => fetch(`${url}/bets`, {
@@ -20,11 +21,10 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 });
 
 const Component = props => {
-  const { id, event_id, price, comment } = props;
+  const { id, event_id, stake } = props;
   const dispatch = useDispatch();
   const userId = useSelector(state => state.user.userId);
   const rubies = useSelector(state => state.user.rubies);
-  const stake = useSelector(state => state.user.stake);
   const [isSending, setIsSending] = useState(false);
   const [open, setOpen] = React.useState(false);
 
@@ -50,7 +50,7 @@ const Component = props => {
 
   return (
     <React.Fragment>
-      <LoadingButton loading={isSending} onClick={sendRequest} {...props}>{comment} {price}</LoadingButton>
+      <LoadingButton startIcon={<DiamondIcon />} variant="contained" color="primary" loading={isSending} onClick={sendRequest} {...props}>{stake}</LoadingButton>
       <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
           Success!

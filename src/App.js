@@ -111,7 +111,7 @@ const authProvider = {
     const admins = [
       // "51122302-7b00-4cae-9b93-3aac669e53f8",
       // "549a6184-ace9-4bf8-b779-da4b9214cd8d",
-      // "80b80da6-1f1d-4d40-a51e-8dc75b0aa380",
+      "80b80da6-1f1d-4d40-a51e-8dc75b0aa380",
       "9d363594-f846-43a6-aeb6-5d49984b8f5c",
       "bbe43d57-b597-4727-b524-a2e457b960af",
     ];

@@ -7,6 +7,10 @@ import ThirdPartyEmailPassword from "supertokens-auth-react/recipe/thirdpartyema
 import { signOut } from "supertokens-auth-react/recipe/emailpassword";
 import Session from "supertokens-auth-react/recipe/session";
 import { Admin, Resource, CustomRoutes, ListGuesser, defaultTheme } from 'react-admin';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
+import MoreTimeIcon from '@mui/icons-material/MoreTime';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import jsonServerProvider from 'ra-data-json-server';
 import Layout from './Bar';
 import {
@@ -17,29 +21,28 @@ import {
 
 const myTheme = {
   ...defaultTheme,
-    palette: {
-      type: 'light',
-      primary: {
-        main: '#780f03',
-      },
-      secondary: {
-        main: '#d8cf28',
-        contrastText: '#142a3d',
-      },
-      info: {
-        main: '#d8cf28',
-      },
-      background: {
-        default: '#efe9e1',
-        paper: '#fffef0',
-      },
-      text: {
-        primary: '#142a3d',
-      },
+  palette: {
+    type: 'light',
+    primary: {
+      main: '#780f03',
     },
+    secondary: {
+      main: '#d8cf28',
+      contrastText: '#142a3d',
+    },
+    info: {
+      main: '#d8cf28',
+    },
+    background: {
+      default: '#efe9e1',
+      paper: '#fffef0',
+    },
+    text: {
+      primary: '#142a3d',
+    },
+  },
   typography: {
-      // Use the system font instead of the default Roboto font.
-      fontFamily: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Arial', 'sans-serif'].join(','),
+    fontFamily: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Arial', 'sans-serif'].join(','),
   },
 };
 
@@ -79,9 +82,7 @@ export const url = 'https://5leb08.deta.dev';
 const dataProvider = jsonServerProvider(url);
 
 const authProvider = {
-  login: params => {
-    return Promise.resolve();
-  },
+  login: params => Promise.resolve(),
   checkError: params => {
     const { status } = params;
 
@@ -93,8 +94,6 @@ const authProvider = {
   },
   checkAuth: async params => {
     if (await Session.doesSessionExist()) {
-      // let userId = await Session.getUserId();
-      // let accessTokenPayload = await Session.getAccessTokenPayloadSecurely();
       return Promise.resolve();
     }
 
@@ -120,7 +119,6 @@ const authProvider = {
       let userId = await Session.getUserId();
 
       if (admins.includes(userId)) {
-        console.log("admin")
         return Promise.resolve("admin");
       } else {
         return Promise.resolve("user");
@@ -136,12 +134,12 @@ const App = () => {
     <SuperTokensWrapper>
       <Router>
         <Admin theme={myTheme} dataProvider={dataProvider} authProvider={authProvider} layout={Layout}>
-          <Resource name="events" list={EventList} />
-          <Resource name="bets" list={ListGuesser} />
+          <Resource name="events" list={EventList} icon={EmojiEventsIcon} />
+          <Resource name="bets" list={ListGuesser} icon={PlaylistAddCheckIcon} />
           {permissions => (
             <>
-              { permissions === 'admin' && <Resource name="adminevents" options={{ label: 'Admin Events' }} list={AdminEventList} create={EventCreate} edit={EventEdit} />}
-              { permissions === 'admin' && <Resource name="teams" list={TeamList} create={TeamCreate} edit={TeamEdit} />}
+              { permissions === 'admin' && <Resource name="adminevents" options={{ label: 'Admin Events' }} list={AdminEventList} create={EventCreate} edit={EventEdit} icon={MoreTimeIcon} />}
+              { permissions === 'admin' && <Resource name="teams" list={TeamList} create={TeamCreate} edit={TeamEdit} icon={GroupAddIcon} />}
             </>
           )}
           <CustomRoutes>

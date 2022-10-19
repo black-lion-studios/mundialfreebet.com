@@ -12,6 +12,10 @@ import { setSession, setRubies, setStake } from './reducers/user';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+// import { useMediaQuery } from '@mui/material';
+import { Link } from 'react-router-dom';
+import { ReactComponent as Logo }  from './logo.svg';
 
 const useSession = () => {
   const session = useSessionContext();
@@ -79,6 +83,19 @@ const MyLogoutButton = forwardRef((props, ref) => {
 
 const MyUserMenu = () => <UserMenu><MyLogoutButton /></UserMenu>;
 
+const MyLogo = () => {
+  // const isSmall = useMediaQuery(theme => theme.breakpoints.down('md'));
+
+  return (
+    <React.Fragment>
+      <Link to="/">
+        <Logo fill="white" style={{ height: 50, width: 50 }} />
+      </Link>
+      {/* {!isSmall && <Typography component="h5" variant="h5">Mundial Freebet</Typography>} */}
+    </React.Fragment>
+  );
+}
+
 const MyAppBar = () => {
   const session = useSession();
   const rubies = useRubies(session);
@@ -87,6 +104,7 @@ const MyAppBar = () => {
 
   return (
     <AppBar color="primary" userMenu={<MyUserMenu />}>
+      <MyLogo />
       <Stack direction="row" alignItems="center" style={{ marginLeft: 'auto', padding: 12 }}>
         <ButtonGroup variant="contained" color="secondary" style={{ marginRight: 12 }}>
           <Button color={ stake === 1 ? "error" : "secondary"} startIcon={stake === 1 ? <DiamondIcon /> : null} onClick={() => dispatch(setStake(1))}>1</Button>

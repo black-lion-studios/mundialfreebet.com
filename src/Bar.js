@@ -8,12 +8,8 @@ import DiamondIcon from '@mui/icons-material/Diamond';
 import { useSessionContext } from 'supertokens-auth-react/recipe/session';
 import { useDispatch, useSelector } from 'react-redux';
 import { url } from './App';
-import { setSession, setRubies, setStake } from './reducers/user';
-import Button from '@mui/material/Button';
-import ButtonGroup from '@mui/material/ButtonGroup';
+import { setSession, setRubies } from './reducers/user';
 import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-// import { useMediaQuery } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { ReactComponent as Logo }  from './logo.svg';
 
@@ -84,14 +80,11 @@ const MyLogoutButton = forwardRef((props, ref) => {
 const MyUserMenu = () => <UserMenu><MyLogoutButton /></UserMenu>;
 
 const MyLogo = () => {
-  // const isSmall = useMediaQuery(theme => theme.breakpoints.down('md'));
-
   return (
     <React.Fragment>
       <Link to="/">
         <Logo fill="white" style={{ height: 50, width: 50 }} />
       </Link>
-      {/* {!isSmall && <Typography component="h5" variant="h5">Mundial Freebet</Typography>} */}
     </React.Fragment>
   );
 }
@@ -99,18 +92,11 @@ const MyLogo = () => {
 const MyAppBar = () => {
   const session = useSession();
   const rubies = useRubies(session);
-  const dispatch = useDispatch();
-  const stake = useSelector(state => state.user.stake);
 
   return (
     <AppBar color="primary" userMenu={<MyUserMenu />}>
       <MyLogo />
       <Stack direction="row" alignItems="center" style={{ marginLeft: 'auto', padding: 12 }}>
-        <ButtonGroup variant="contained" color="secondary" style={{ marginRight: 12 }}>
-          <Button color={ stake === 1 ? "error" : "secondary"} startIcon={stake === 1 ? <DiamondIcon /> : null} onClick={() => dispatch(setStake(1))}>1</Button>
-          <Button color={ stake === 2 ? "error" : "secondary"} startIcon={stake === 2 ? <DiamondIcon /> : null} onClick={() => dispatch(setStake(2))}>2</Button>
-          <Button color={ stake === 5 ? "error" : "secondary"} startIcon={stake === 5 ? <DiamondIcon /> : null} onClick={() => dispatch(setStake(5))}>5</Button>
-        </ButtonGroup>
         <Badge badgeContent={rubies} max={9999} >
           <DiamondIcon />
         </Badge>

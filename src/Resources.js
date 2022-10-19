@@ -21,12 +21,12 @@ import MyDatagrid from "./EventList";
 import CountryItem from "./components/CountryItem";
 import { ButtonGroup, Grid, Typography } from "@mui/material";
 import Stack from '@mui/material/Stack';
-import PlaceBetButton from './components/PlaceBetButton';
+import EventListButton from './components/EventListButton';
 import { useMediaQuery } from '@mui/material';
 
 const CountryField = props => {
-  const { subheader, parent_record, reversed } = props;
-  return <FunctionField render={record => <CountryItem {...record} parent_record={parent_record} subheader={subheader} reversed={reversed} />} />
+  const { subheader, parent_record } = props;
+  return <FunctionField render={record => <CountryItem {...record} parent_record={parent_record} subheader={subheader} />} />
 }
 
 const LargeScreen = props => {
@@ -43,9 +43,9 @@ const LargeScreen = props => {
         <Stack spacing={1} direction="column" justifyContent="center" alignItems="center" style={{ height: "100%" }}>
           <DateField source="start_date" showTime={true} options={{ dateStyle: 'long', timeStyle: 'short' }} />
           <ButtonGroup variant="outlined" color="primary" fullWidth>
-            <PlaceBetButton variant="outlined" color="primary" id={home_id} event_id={id} price={home_price} comment="home" />
-            <PlaceBetButton variant="outlined" color="primary" id={draw_id} event_id={id} price={draw_price} comment="draw" />
-            <PlaceBetButton variant="outlined" color="primary" id={away_id} event_id={id} price={away_price} comment="away" />
+            <EventListButton id={home_id} event_id={id} price={home_price} comment="home" />
+            <EventListButton id={draw_id} event_id={id} price={draw_price} comment="draw" />
+            <EventListButton id={away_id} event_id={id} price={away_price} comment="away" />
           </ButtonGroup>
         </Stack>
       </Grid>
@@ -79,9 +79,9 @@ const SmallScreen = props => {
             </Grid>
           </Grid>
           <ButtonGroup variant="outlined" color="primary" fullWidth>
-            <PlaceBetButton variant="outlined" color="primary" id={home_id} event_id={id} price={home_price} comment="home" />
-            <PlaceBetButton variant="outlined" color="primary" id={draw_id} event_id={id} price={draw_price} comment="draw" />
-            <PlaceBetButton variant="outlined" color="primary" id={away_id} event_id={id} price={away_price} comment="away" />
+            <EventListButton id={home_id} event_id={id} price={home_price} comment="home" />
+            <EventListButton id={draw_id} event_id={id} price={draw_price} comment="draw" />
+            <EventListButton id={away_id} event_id={id} price={away_price} comment="away" />
           </ButtonGroup>
         </Stack>
       </Grid>

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useLogin, useNotify, Login } from "react-admin";
+import React, { useState, useEffect } from "react";
+import { useLogin, useNotify, Login, useCheckAuth } from "react-admin";
 import { signup, signInWithGoogle, signInWithFacebook } from "../authProvider";
 import {
   IconButton,
@@ -15,6 +15,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import Container from '@mui/material/Container';
 import GoogleIcon from '@mui/icons-material/Google';
 import FacebookIcon from '@mui/icons-material/Facebook';
+import { useNavigate } from 'react-router-dom';
 import { ReactComponent as Logo }  from '../logo.svg';
 
 const LoginForm = () => {
@@ -24,14 +25,25 @@ const LoginForm = () => {
   const login = useLogin();
   const notify = useNotify();
   const [password, setPassword] = useState('');
-  const isSubmitting = false;
+  const checkAuth = useCheckAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    checkAuth({}, false)
+    .then(() => { navigate('/') })
+    .catch(() => {});
+  }, [checkAuth, navigate]);
 
   const handleSubmit = e => {
     e.preventDefault();
     if (showSignUp) {
-      signup({ email, password }).catch(() =>
+      signup({ email, password })
+      .then(() => {
+        navigate('/')
+      })
+      .catch(() => {
         notify('Invalid email or password')
-      );
+      });
     } else {
       login({ email, password }).catch(() => {
         notify('Invalid email or password')
@@ -71,13 +83,13 @@ const LoginForm = () => {
           />
           { !showSignUp && <Typography>Don't have an account? <Link onClick={() => setShowSignUp(true) }>Sign up</Link>.</Typography>}
           { showSignUp && <Typography>Already have an account? <Link onClick={() => setShowSignUp(false) }>Sign in</Link>.</Typography>}
-          <LoadingButton size="large" variant="contained" color="secondary" loading={isSubmitting} onClick={handleSubmit}>
+          <LoadingButton size="large" variant="contained" color="secondary" onClick={handleSubmit}>
             {showSignUp ? "Sign Up" : "Login"}
           </LoadingButton>
-          <LoadingButton style={{ backgroundColor: "#DB4437" }} fullWidth startIcon={<GoogleIcon />} size="large" variant="contained" loading={isSubmitting} onClick={() => signInWithGoogle()}>
+          <LoadingButton style={{ backgroundColor: "#DB4437" }} fullWidth startIcon={<GoogleIcon />} size="large" variant="contained" onClick={() => signInWithGoogle()}>
             Google login
           </LoadingButton>
-          <LoadingButton style={{ backgroundColor: "#4267B2" }} fullWidth startIcon={<FacebookIcon />} size="large" variant="contained" loading={isSubmitting} onClick={() => signInWithFacebook()}>
+          <LoadingButton style={{ backgroundColor: "#4267B2" }} fullWidth startIcon={<FacebookIcon />} size="large" variant="contained" onClick={() => signInWithFacebook()}>
             Facebook login
           </LoadingButton>
         </Stack>

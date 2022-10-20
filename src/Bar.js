@@ -1,11 +1,9 @@
 import React, { useEffect, forwardRef } from 'react';
-import { UserMenu, AppBar, Layout } from 'react-admin';
+import { UserMenu, AppBar, Layout, useGetIdentity, useLogout } from 'react-admin';
 import MenuItem from '@mui/material/MenuItem';
 import ExitIcon from '@mui/icons-material/PowerSettingsNew';
-import { signOut } from 'supertokens-auth-react/recipe/thirdpartyemailpassword';
 import Badge from '@mui/material/Badge';
 import DiamondIcon from '@mui/icons-material/Diamond';
-import { useSessionContext } from 'supertokens-auth-react/recipe/session';
 import { useDispatch, useSelector } from 'react-redux';
 import { url } from './App';
 import { setSession, setRubies } from './reducers/user';
@@ -13,30 +11,13 @@ import Stack from '@mui/material/Stack';
 import { Link } from 'react-router-dom';
 import { ReactComponent as Logo }  from './logo.svg';
 
-const useSession = () => {
-  const session = useSessionContext();
-
-  if (session.loading) {
-    return null;
-  }
-
-  let { doesSessionExist } = session;
-
-  if (!doesSessionExist) {
-    return null;
-  }
-
-  return session;
-}
-
 const useRubies = session => {
   const dispatch = useDispatch();
   const rubies = useSelector(state => state.user.rubies);
 
   useEffect(() => {
     if (session !== undefined && session !== null) {
-      const { userId: key } = session;
-
+      const { email: key } = session;
       dispatch(setSession(session));
 
       fetch(`${url}/rubies/${key}`).then(res => res.json()).then(rs => {
@@ -65,16 +46,13 @@ const useRubies = session => {
 }
 
 const MyLogoutButton = forwardRef((props, ref) => {
-  async function onLogout() {
-    await signOut();
-    window.location.href = "/#/";
-  }
-
+  const logout = useLogout();
+  const handleClick = () => logout();
   return (
-    <MenuItem onClick={onLogout} ref={ref}>
+    <MenuItem onClick={handleClick} ref={ref}>
       <ExitIcon /> Logout
     </MenuItem>
-  )
+  );
 });
 
 const MyUserMenu = () => <UserMenu><MyLogoutButton /></UserMenu>;
@@ -90,8 +68,9 @@ const MyLogo = () => {
 }
 
 const MyAppBar = () => {
-  const session = useSession();
-  const rubies = useRubies(session);
+  const auth = useGetIdentity();
+  const { identity } = auth;
+  const rubies = useRubies(identity);
 
   return (
     <AppBar color="primary" userMenu={<MyUserMenu />}>

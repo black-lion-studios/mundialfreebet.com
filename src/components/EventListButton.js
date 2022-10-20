@@ -38,13 +38,13 @@ const Component = props => {
               <Typography>Please select the amount of rubies you would like to stake.</Typography>
             </Grid>
             <Grid item xs={12}>
-              <PlaceBetButton id={id} event_id={event_id} price={price} comment={comment} stake={1} />
+              <PlaceBetButton variant="contained" color="primary" id={id} event_id={event_id} price={price} comment={comment} stake={1} />
             </Grid>
             <Grid item xs={12}>
-              <PlaceBetButton id={id} event_id={event_id} price={price} comment={comment} stake={2} />
+              <PlaceBetButton variant="contained" color="primary" id={id} event_id={event_id} price={price} comment={comment} stake={2} />
             </Grid>
             <Grid item xs={12}>
-              <PlaceBetButton id={id} event_id={event_id} price={price} comment={comment} stake={5} />
+              <PlaceBetButton variant="contained" color="primary" id={id} event_id={event_id} price={price} comment={comment} stake={5} />
             </Grid>
           </Grid>
         </Box>

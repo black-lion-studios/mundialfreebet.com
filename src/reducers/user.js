@@ -4,9 +4,11 @@ import { url } from "../App";
 export const subtractRubies = createAsyncThunk(
   'rubies/update',
   async (state, thunkAPI) => {
-    const {key, rubies, stake} = state;
+    const {email, rubies, stake} = state;
 
-    return fetch(`${url}/rubies/${key}`, {
+    console.log(state);
+
+    return fetch(`${url}/rubies/${email}`, {
       method: 'PUT',
       body: JSON.stringify({
         count: rubies - stake
@@ -18,8 +20,8 @@ export const subtractRubies = createAsyncThunk(
 const userSlice = createSlice({
   name: 'user',
   initialState: {
+    email: "",
     rubies: 0,
-    userId: "",
     stake: 1,
   },
   reducers: {
@@ -30,9 +32,10 @@ const userSlice = createSlice({
       }
     },
     setSession: (state, action) => {
+      console.log(action);
       return {
         ...state,
-        userId: action.payload.userId,
+        ...action.payload,
       }
     },
     setStake: (state, action) => {

@@ -1,6 +1,13 @@
-import * as React from "react";
+import * as React from 'react';
+import CountryItem from "../components/CountryItem";
+import EventListButton from '../components/EventListButton';
 import {
   Datagrid,
+  DatagridBody,
+  RecordContextProvider,
+  useGetList,
+  useList,
+  ListContextProvider,
   List,
   TextField,
   Edit,
@@ -17,12 +24,77 @@ import {
   DateField,
   DateTimeInput,
 } from 'react-admin';
-import MyDatagrid from "./EventList";
-import CountryItem from "./components/CountryItem";
-import { ButtonGroup, Grid, Typography } from "@mui/material";
-import Stack from '@mui/material/Stack';
-import EventListButton from './components/EventListButton';
-import { useMediaQuery } from '@mui/material';
+import {
+  Card,
+  CardHeader,
+  TableCell,
+  TableRow,
+  ButtonGroup,
+  Grid,
+  Typography,
+  Stack,
+  useMediaQuery
+} from '@mui/material';
+
+const MyDatagridRow = ({ record, id, onToggleItem, children, selected, selectable }) => (
+  <RecordContextProvider value={record}>
+    <TableRow>
+      {React.Children.map(children, field => (
+        <TableCell key={`${id}-${field.props.source}`}>
+          {field}
+        </TableCell>
+      ))}
+    </TableRow>
+  </RecordContextProvider>
+);
+
+const MyDatagridBody = props => <DatagridBody {...props} row={<MyDatagridRow />} />;
+const MyDatagrid = props => <Datagrid {...props} body={<MyDatagridBody />} />;
+
+const MyContext = props => {
+  const { children, isLoading, data, group } = props;
+  const contextProvider = useList({ data, isLoading });
+
+  return (
+    <ListContextProvider value={contextProvider}>
+      <Card style={{ marginTop: 20 }}>
+        <CardHeader title={`Group ${String.fromCharCode(group + 65)}`} />
+        <MyDatagrid rowClick="edit" header={() => { }}>
+          {children}
+        </MyDatagrid>
+      </Card>
+    </ListContextProvider>
+  )
+}
+
+const MyCustomList = props => {
+  const { children } = props;
+
+  const { data, isLoading } = useGetList('events', {
+    pagination: { page: 1, perPage: 100 },
+    sort: { field: 'start_date', order: 'ASC' },
+  });
+  const tofilter = data || [];
+
+  const fromfilter = tofilter.reduce((acc, cur) => {
+    const i = cur.group.charCodeAt(0) - 65;
+    if (acc[i] === undefined) {
+      acc[i] = [];
+    }
+    acc[i].push(cur);
+    return acc;
+  }, []);
+
+  return (
+    <React.Fragment>
+      {fromfilter.map((d, i) => (
+        <MyContext key={i} data={d} isLoading={isLoading} group={i}>
+          {children}
+        </MyContext>
+      ))}
+    </React.Fragment>
+  );
+};
 
 const CountryField = props => {
   const { subheader, parent_record } = props;
@@ -105,9 +177,9 @@ export const EventList = () => {
   const isSmall = useMediaQuery(theme => theme.breakpoints.down('md'));
 
   return (
-    <MyDatagrid>
+    <MyCustomList>
       <FunctionField render={record => isSmall ? <SmallScreen {...record} /> : <LargeScreen {...record} />} />
-    </MyDatagrid>
+    </MyCustomList>
   );
 }
 
@@ -172,33 +244,6 @@ export const EventCreate = () => (
         <SelectInput optionText="name" />
       </ReferenceInput>
       <NumberInput source="away_price" defaultValue={3.00} />
-    </SimpleForm>
-  </Create>
-);
-
-export const TeamList = () => (
-  <List perPage={50}>
-    <Datagrid rowClick="edit">
-      <TextField source="name" />
-      <TextField source="country_code" />
-    </Datagrid>
-  </List>
-);
-
-export const TeamEdit = () => (
-  <Edit>
-    <SimpleForm>
-      <TextInput source="name" />
-      <TextInput source="country_code" />
-    </SimpleForm>
-  </Edit>
-);
-
-export const TeamCreate = () => (
-  <Create redirect="list">
-    <SimpleForm>
-      <TextInput source="name" />
-      <TextInput source="country_code" />
     </SimpleForm>
   </Create>
 );

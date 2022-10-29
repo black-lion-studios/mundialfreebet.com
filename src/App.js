@@ -1,56 +1,58 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { HashRouter as Router } from "react-router-dom";
-import { Admin, Resource, ListGuesser, defaultTheme } from 'react-admin';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
 import MoreTimeIcon from '@mui/icons-material/MoreTime';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
-import jsonServerProvider from 'ra-data-json-server';
 import Layout from './Bar';
+import authProvider, { getSession } from './authProvider';
+import themeProvider from './themeProvider';
+import dataProvider from './dataProvider';
+import Login from './components/Login';
+import {
+  Admin,
+  Resource,
+  ListGuesser,
+  useGetIdentity
+} from 'react-admin';
+import {
+  TeamCreate,
+  TeamEdit,
+  TeamList
+} from './resources/teams';
 import {
   AdminEventList,
-  TeamCreate, TeamEdit, TeamList,
-  EventCreate, EventEdit, EventList,
-} from './Resources';
-import authProvider from './authProvider';
-import Login from './components/Login';
-
-const myTheme = {
-  ...defaultTheme,
-  palette: {
-    type: 'light',
-    primary: {
-      main: '#780f03',
-    },
-    secondary: {
-      main: '#d8cf28',
-      contrastText: '#142a3d',
-    },
-    info: {
-      main: '#d8cf28',
-    },
-    background: {
-      default: '#efe9e1',
-      paper: '#fffef0',
-    },
-    text: {
-      primary: '#142a3d',
-    },
-  },
-  typography: {
-    fontFamily: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Arial', 'sans-serif'].join(','),
-  },
-};
+  EventCreate,
+  EventEdit,
+  EventList,
+} from './resources/events';
 
 export const url = 'https://5leb08.deta.dev';
-const dataProvider = jsonServerProvider(url);
+
+const useAccessToken = () => {
+  const [access_token, setAccessToken] = useState(null);
+  const { isLoading } = useGetIdentity();
+  // console.log("asdf", asdf);
+
+  useEffect(() => {
+    getSession().then(d => {
+      const { access_token: token } = d;
+      console.log(token);
+      setAccessToken(token);
+    })
+  }, [isLoading]);
+
+  return access_token;
+}
 
 const App = () => {
   return (
     <Router>
-      <Admin loginPage={Login} theme={myTheme} dataProvider={dataProvider} authProvider={authProvider} layout={Layout}>
+      <Admin loginPage={Login} theme={themeProvider} dataProvider={dataProvider(useAccessToken())} authProvider={authProvider} layout={Layout}>
         <Resource name="events" list={EventList} icon={EmojiEventsIcon} />
         <Resource name="bets" list={ListGuesser} icon={PlaylistAddCheckIcon} />
+        <Resource name="rubies" list={ListGuesser} icon={PlaylistAddCheckIcon} />
+        {/* <Resource name="adminevents" options={{ label: 'Admin Events' }} list={AdminEventList} create={EventCreate} edit={EventEdit} icon={MoreTimeIcon} /> */}
         {permissions => (
           <>
             { permissions === 'admin' && <Resource name="adminevents" options={{ label: 'Admin Events' }} list={AdminEventList} create={EventCreate} edit={EventEdit} icon={MoreTimeIcon} />}

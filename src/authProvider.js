@@ -5,6 +5,21 @@ const supabase = createClient(
   process.env.REACT_APP_SUPABASE_KEY
 )
 
+export const getSession = async () => {
+  const { data, error } = await supabase.auth.getSession();
+
+  if (error) {
+    return Promise.reject(error);
+  }
+
+  const { session } = data;
+  if (session === null) {
+    return Promise.reject();
+  } else {
+    return Promise.resolve(session);
+  }
+}
+
 export const signup = async (email, password) => {
   const { data, error } = await supabase.auth.signUp(email, password);
 
@@ -52,20 +67,7 @@ const authProvider = {
       console.log(error)
       return Promise.resolve();
     },
-    checkAuth: async () => {
-      const { data, error } = await supabase.auth.getSession();
-
-      if (error) {
-        return Promise.reject(error);
-      }
-
-      const { session } = data;
-      if (session === null) {
-        return Promise.reject();
-      } else {
-        return Promise.resolve(session);
-      }
-    },
+    checkAuth: getSession,
     logout: async () => {
       const { error } = await supabase.auth.signOut();
       if (error) {
@@ -92,7 +94,16 @@ const authProvider = {
         return Promise.resolve();
       }
     },
-    getPermissions: (params) => { /* ... */ },
+    getPermissions: async () => {
+      const session = await getSession();
+      const { user } = session;
+
+      if (user.email === "theio.vrefos@gmail.com") {
+        return "admin";
+      } else {
+        return "user";
+      }
+    },
 }
 
 export default authProvider;

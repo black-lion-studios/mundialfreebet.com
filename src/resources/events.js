@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import CountryItem from "../components/CountryItem";
 import EventListButton from '../components/EventListButton';
 import {
@@ -33,7 +33,10 @@ import {
   Grid,
   Typography,
   Stack,
-  useMediaQuery
+  useMediaQuery,
+  Switch,
+  FormGroup,
+  FormControlLabel
 } from '@mui/material';
 
 const MyDatagridRow = ({ record, id, onToggleItem, children, selected, selectable }) => (
@@ -173,13 +176,24 @@ const MarginField = record => {
   return <Typography>{margin}</Typography>;
 }
 
-export const EventList = () => {
+export const EventList = props => {
+  const { permissions } = props;
+  const isAdmin = permissions === "admin";
+  const [view, setView] = useState(true);
   const isSmall = useMediaQuery(theme => theme.breakpoints.down('md'));
 
   return (
-    <MyCustomList>
-      <FunctionField render={record => isSmall ? <SmallScreen {...record} /> : <LargeScreen {...record} />} />
-    </MyCustomList>
+    <>
+      { isAdmin && <FormGroup>
+        <FormControlLabel control={
+          <Switch size="small" defaultChecked checked={view} onChange={event => setView(event.target.checked)} />
+        } label="Show Admin Panel" sx={{ marginTop: 5 }} />
+      </FormGroup>}
+      { view && isAdmin && <AdminEventList {...props} />}
+      <MyCustomList>
+        <FunctionField render={record => isSmall ? <SmallScreen {...record} /> : <LargeScreen {...record} />} />
+      </MyCustomList>
+    </>
   );
 }
 

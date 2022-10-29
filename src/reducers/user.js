@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { url } from "../App";
+const url = 'https://5leb08.deta.dev';
 
 export const subtractRubies = createAsyncThunk(
   'rubies/update',
@@ -33,10 +33,9 @@ const userSlice = createSlice({
       }
     },
     setSession: (state, action) => {
-      console.log(action);
       return {
         ...state,
-        access_token: action.token,
+        access_token: action.payload.access_token,
         ...action.payload.user,
       }
     },

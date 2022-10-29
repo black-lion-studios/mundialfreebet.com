@@ -20,6 +20,7 @@ export const subtractRubies = createAsyncThunk(
 const userSlice = createSlice({
   name: 'user',
   initialState: {
+    access_token: "",
     email: "",
     rubies: 0,
     stake: 1,
@@ -35,7 +36,8 @@ const userSlice = createSlice({
       console.log(action);
       return {
         ...state,
-        ...action.payload,
+        access_token: action.token,
+        ...action.payload.user,
       }
     },
     setStake: (state, action) => {

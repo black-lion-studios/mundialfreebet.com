@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { subtractRubies } from '../reducers/user';
 import DiamondIcon from '@mui/icons-material/Diamond';
 import { useNotify } from "react-admin";
-import { url } from '../App';
+export const url = 'https://5leb08.deta.dev';
 
 const placeBet = (id, event_id, stake) => fetch(`${url}/bets`, {
   method: "POST",

@@ -33,6 +33,7 @@ const userSlice = createSlice({
       }
     },
     setSession: (state, action) => {
+      console.log(action);
       return {
         ...state,
         access_token: action.payload.access_token,

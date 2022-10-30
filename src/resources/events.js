@@ -179,7 +179,7 @@ const MarginField = record => {
 export const EventList = props => {
   const { permissions } = props;
   const isAdmin = permissions === "admin";
-  const [view, setView] = useState(true);
+  const [view, setView] = useState(false);
   const isSmall = useMediaQuery(theme => theme.breakpoints.down('md'));
 
   return (

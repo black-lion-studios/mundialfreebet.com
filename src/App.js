@@ -12,8 +12,7 @@ import { useSelector } from 'react-redux';
 import {
   Admin,
   Resource,
-  ListGuesser,
-  WithPermissions
+  WithPermissions,
 } from 'react-admin';
 import {
   TeamCreate,
@@ -25,6 +24,10 @@ import {
   EventEdit,
   EventList
 } from './resources/events';
+import {
+  BetsCreate,
+  BetsList
+} from './resources/bets';
 
 const App = () => {
   const access_token = useSelector(state => state.user.access_token);
@@ -33,7 +36,7 @@ const App = () => {
     <Router>
       <Admin key={access_token} loginPage={Login} theme={themeProvider} dataProvider={dataProvider(access_token)} authProvider={authProvider} layout={Layout}>
         <Resource name="events" icon={EmojiEventsIcon} list={<WithPermissions component={EventList} />} create={EventCreate} edit={EventEdit} />
-        <Resource name="bets" icon={PlaylistAddCheckIcon} list={ListGuesser} />
+        <Resource name="bets" icon={PlaylistAddCheckIcon} list={BetsList} create={BetsCreate} />
         <Resource name="rubies" />
         {permissions => (
           <>

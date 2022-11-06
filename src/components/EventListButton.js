@@ -14,7 +14,7 @@ const Component = props => {
   });
 
   return (
-    <Button variant="contained" color="secondary" onClick={() => redirect(`/bets/create?source=${payload}`)} {...props}>{comment} {price}</Button>
+    <Button variant="contained" color="secondary" onClick={() => redirect(`/bets/create?source=${payload}`)} {...props}>{comment} {(Math.round(price * 100) / 100).toFixed(2)}</Button>
   )
 }
 

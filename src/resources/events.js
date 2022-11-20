@@ -216,6 +216,7 @@ export const AdminEventList = () => (
         <TextField source="name" />
       </ReferenceField>
       <NumberField source="away_price" />
+      <TextField source="settlement" />
     </Datagrid>
   </List>
 );
@@ -237,6 +238,12 @@ export const EventEdit = () => (
         <SelectInput optionText="name" />
       </ReferenceInput>
       <NumberInput source="away_price" defaultValue={3.00} />
+      <SelectInput source="settlement" choices={[
+        { "id": "home", "name": "home" },
+        { "id": "draw", "name": "draw" },
+        { "id": "away", "name": "away" },
+        { "id": "pending", "name": "pending" },
+      ]} />
     </SimpleForm>
   </Edit>
 );
@@ -251,13 +258,14 @@ export const EventCreate = () => (
       </ReferenceInput>
       <NumberInput source="home_price" defaultValue={3.00} />
       <ReferenceInput perPage={50} sort={{ field: "name", order: "ASC" }} source="draw_id" reference="teams">
-        <SelectInput optionText="name" defaultValue="sxus1qjs3f8t" />
+        <SelectInput optionText="name" defaultValue={27} />
       </ReferenceInput>
       <NumberInput source="draw_price" defaultValue={3.00} />
       <ReferenceInput perPage={50} sort={{ field: "name", order: "ASC" }} source="away_id" reference="teams">
         <SelectInput optionText="name" />
       </ReferenceInput>
       <NumberInput source="away_price" defaultValue={3.00} />
+      <TextInput source="settlement" defaultValue="pending" />
     </SimpleForm>
   </Create>
 );
